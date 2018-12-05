@@ -15,11 +15,11 @@ if (module["hot"]) {
   });
 }
 if (document.readyState === "complete") {
-  alert(1)
+
   bootApplication();
-  alert(2)
+
 } else {
-  alert(3)
+
   document.addEventListener("DOMContentLoaded", bootApplication);
-  alert(4)
+ 
 }

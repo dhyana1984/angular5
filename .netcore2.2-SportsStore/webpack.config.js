@@ -83,7 +83,7 @@ module.exports = {
     ]
   },
   "output": {
-    "path": path.join(process.cwd(), "wwwwroot/dist"),
+    "path": path.join(process.cwd(), "wwwroot/dist"),
     "filename": "[name].bundle.js",
     "chunkFilename": "[id].chunk.js",
     "publicPath":"/app/"
