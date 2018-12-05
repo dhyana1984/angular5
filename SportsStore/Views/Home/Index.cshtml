@@ -1,8 +1,12 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@section Scripts{
+<script src="~/dist/inline.bundle.js"></script>
+<script src="~/dist/polyfills.bundle.js"></script>
+<script src="~/dist/vendor.bundle.js"></script>
+<script src="~/dist/main.bundle.js"></script>
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="navbar bg-inverse">
+<a class="navbar-brand text-white">@(ViewBag.Message??"SPORTS STORE")</a>
+</div>
+<div class="p-1">
+  <app-root></app-root>
 </div>

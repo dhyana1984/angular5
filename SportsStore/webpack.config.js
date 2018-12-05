@@ -73,7 +73,7 @@ module.exports = {
   },
   "entry": {
     "main": [
-      "./ClientApp\\main.ts"
+      "./ClientApp\\boot.ts"
     ],
     "polyfills": [
       "./ClientApp\\polyfills.ts"
@@ -83,9 +83,10 @@ module.exports = {
     ]
   },
   "output": {
-    "path": path.join(process.cwd(), "dist"),
+    "path": path.join(process.cwd(), "wwwwroot/dist"),
     "filename": "[name].bundle.js",
-    "chunkFilename": "[id].chunk.js"
+    "chunkFilename": "[id].chunk.js",
+    "publicPath":"/app/"
   },
   "module": {
     "rules": [
