@@ -1,0 +1,25 @@
+<!DOCTYPE <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Primer</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+    
+    <script>
+        //Javascript模块加载器
+        System.config({
+            packages:{"":{}}
+        });
+
+        System.import ("primer").catch(function(err){
+                consol.error(err);
+        });
+    </script>
+
+    
+</head>
+<body class="m-a-1">
+    <h3>JavaScript Primer</h3>
+</body>
+</html>
