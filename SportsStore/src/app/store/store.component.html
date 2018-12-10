@@ -1,6 +1,6 @@
 <div class="navbar navbar-inverse bg-inverse">
     <a class="navbar-brand">SPORTS STORE</a>
-
+    <cart-summary></cart-summary>
 </div>
 <div class="col-xs-3  p-a-1">
     <!-- 按照category显示按钮 -->
@@ -23,6 +23,9 @@ class="btn btn-outline-primary btn-block"
         </h4>
         <div class="card-text p-a-1">
             {{product.description}}
+            <button class="btn btn-success btn-sm pull-xs-right" (click)="addProductToCart(product)">
+                Add To Cart
+            </button>
         </div>
     </div>
     <div class="form-inline pull-xs-left m-r-1">
