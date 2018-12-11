@@ -6,6 +6,7 @@ import {AuthService} from "../model/auth.service";
 export class AuthGuard{
     constructor(private router:Router, private auth: AuthService){}
 
+    //这个方法名必须是canActivate
     canActivate(route:ActivatedRouteSnapshot, state:RouterStateSnapshot): boolean{
         if(!this.auth.authenticated){
             this.router.navigateByUrl("/admin/auth");
