@@ -30,7 +30,12 @@ import {StoreFirstGuard} from "./storeFirst.guard"
         path:"checkout",component:CheckoutComponent,
         canActivate:[StoreFirstGuard]
       },
-
+      {
+        path:"admin",
+        //当导航到/admin时，应该从/app/admin/admin.module.ts文件加载由名为AdminModule的类定义的功能模块
+        loadChildren:"app/admin/admin.module#AdminModule", 
+        canActivate:[StoreFirstGuard]
+      },
       {
         path:"**",redirectTo:"/store",
         canActivate:[StoreFirstGuard]
