@@ -5,6 +5,7 @@ import {Product} from "./product.model";
 import{Cart} from "../model/cart.model";
 import {Order} from "./order.model";
 import "rxjs/add/operator/map";
+import { ProductRepository } from "./product.repository";
 
 const PROTOCOL = "http";
 const PORT = 3500;
@@ -33,6 +34,31 @@ export class RestDataSource{
     getProducts():Observable<Product[]>{
         return this.sendRequest(RequestMethod.Get,"products");
     }
+
+    saveProduct(product: Product) : Observable<Product>{
+        return this.sendRequest(RequestMethod.Post, "products",product,true)
+    }
+
+    updateProduct(product) : Observable<Product>{
+        return this.sendRequest(RequestMethod.Put, `products/${product.id}`,product,true) as Observable<Product>;
+    }
+
+    deleteProduct(id: number):Observable<Product>{
+        return this.sendRequest(RequestMethod.Delete,`products/${id}`,null,true) as Observable<Product>;
+    }
+
+    getOrders():Observable<Order[]>{
+        return this.sendRequest(RequestMethod.Get,"orders",null,true) as Observable<Order[]>;
+    }
+
+    deleteOrder(id: number):Observable<Order>{
+        return this.sendRequest(RequestMethod.Delete,`orders/${id}`,null,true) as Observable<Order>;
+    }
+
+    updateOrder(order:Order):Observable<Order>{
+        return this.sendRequest(RequestMethod.Put,`orders/${order.id}`,order,true) as Observable<Order>;
+    }
+
 
     saveOrder(order:Order):Observable<Order>{
         return this.sendRequest(RequestMethod.Post,"orders",order);
