@@ -7,4 +7,8 @@ import {Model} from "./repository.model"
 })
 export class ProductComponent{
     model: Model = new Model();
+
+    getClasses():string {
+        return this.model.getProducts().length ==5 ?"bg-success":"bg-warning";
+    }
 }

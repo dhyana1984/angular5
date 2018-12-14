@@ -14,6 +14,9 @@ var ProductComponent = (function () {
     function ProductComponent() {
         this.model = new repository_model_1.Model();
     }
+    ProductComponent.prototype.getClasses = function () {
+        return this.model.getProducts().length == 5 ? "bg-success" : "bg-warning";
+    };
     ProductComponent = __decorate([
         core_1.Component({
             selector: "app",
