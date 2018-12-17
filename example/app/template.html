@@ -1,136 +1,83 @@
-<!-- <div class="bg-info p-a-1">
-    There are {{model.getProducts().length}} products in the model
-</div> -->
-
-<div>
-    <H2>[textContent]是字面字符串绑定，设置div的文本内容</H2>
-</div>
-<!-- [textContent]是字面字符串绑定，设置div的文本内容 -->
-<div [ngClass]="'p-a-1 ' + getClasses(1)"  [textContent]="'Name: ' + (model.getProduct(1)?.name ||'None')"> 
-  <!-- 也可以用字符串插入绑定显示文本内容
-      Name: {{model.getProduct(1)?.name ||'None'}} -->
+<div class="bg-info p-a-1">
+    There are {{getProductCount()}} products
 
 </div>
+<h4>*ngif指令</h4>
 
-<div>
-        <H2>[value]标准属性绑定</H2>
+<div *ngIf="getProductCount() > 4" class="bg-info p-a-1 m-t-1">
+    There are more than 4 products in the model
+</div>
+
+<div *ngIf="getProductByPosition(0).name != 'Kayak'" class="bg-info p-a-1 m-t-1">
+    The first product isn't a Kayak
+</div>
+<h4>*ngSwitch指令</h4>
+<div class="bg-info p-a-1 m-t-1" [ngSwitch] ="getProductCount()">
+    
+    <span *ngSwitchCase="2">There are 2 products</span>
+    <span *ngSwitchCase="5">There are 5 products</span>
+    <span *ngSwitchDefault>There is the default</span>
+</div>
+<h4>*ngSwitch 指令判断字符串</h4>
+<div class="bg-info p-a-1 m-t-1" [ngSwitch] ="getProduct(1).name">
+        <!-- targetName实际上是组件里面类的一个属性，而不是字符串target -->
+        <span *ngSwitchCase="targetName">Kayak</span>
+        <!-- 如果*ngSwitchCase要与字符串比较，需要在双引号里面加单引号，否则就是属性或者方法 -->
+        <span *ngSwitchCase="'Lifejacket'">Lifejacket</span>
+        <span *ngSwitchDefault>Other Product</span>
     </div>
-<div class="form-group m-t-1">
-    <label >Name:</label>
-    <input class="form-control" type="text" [value]="model.getProduct(1)?.name||'None'">
-</div>
-<div>
-        <H2>绑定js里面无法获得的dom对象的属性，例如colspan，要用[attr.colspan]</H2>
-    </div>
 
-<table class="table table-sm table-bordered table-striped m-t-1">
+<h4>*ngFor指令</h4>
+<table class="table table-sm table-bordered m-t-1">
     <tr>
-        <th>1</th>
-        <th>2</th>
-        <th>3</th>
-        <th>4</th>
-        <th>5</th>
+        <th></th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
     </tr>
-    <tr>
-        <!-- 绑定js里面无法获得的dom对象的属性，例如colspan，要用[attr.colspan] -->
-        <td  [attr.colspan]="model.getProducts().length">
-        {{model.getProduct(1)?.name||'None'}}
-        </td>
-       
+    <!-- 用trackBy:getKey表示使用getKey方法判断删除的和新增的item是不是已存在的，如果是则不必重新生成html内容 -->
+    <tr *ngFor="let item of getProducts(); let i = index; let odd=odd;  let first = first;let last =last ;trackBy:getKey" 
+    [class.bg-primary]="odd"  [class.bg-info]="!odd"
+    [class.bg-warning] = "first || last"
+    >
+        <td>{{i+1}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.category}}</td>
+        <td *ngIf="!last" >{{item.price}}</td>
     </tr>
-
-
 </table>
 
-<div>
-        <H2>类绑定，使用标准属性绑定[class]</H2>
+
+<h4>使用ngTemplateOutlet指令</h4>
+
+<!-- 定义重复内容,let-text="title"定义一个上下文 -->
+<template #titleTemplate let-text="title">
+    <h4 class="p-a-1 bg-success">{{text}}</h4>
+</template>
+<!-- 使用重复内容，[ngOutletContext]="{title:'Header'}"设置上下文 -->
+<template [ngTemplateOutlet] = "titleTemplate" [ngOutletContext]="{title:'Header'}"></template>
+    <div class="bg-info p-a-1 m-a-1">
+        There are {{getProductCount()}} products.
     </div>
-<!-- 类绑定，使用标准属性绑定[class] -->
-<div [class] ="getClasses(1)">
-    The first product is {{model.getProduct(1).name}}
+
+<template [ngTemplateOutlet] = "titleTemplate" [ngOutletContext]="{title:'Footer'}">
+
+</template>
+
+
+<h4>使用指令和模板绑定的限制</h4>
+<div class="bg-info p-a-1">
+    <!-- 在绑定中出现运算符会报错 -->
+    <!-- Counter:{{counter=counter+1}} -->
+
+    <!-- 不能再模板的绑定中修改数据 -->
+    <!-- Next product is {{nextProduct.name}} -->
+
+    <!-- There are {{getProductCount()}} products -->
+
+    <!-- 由于存在表达式上下文，所以表达式无法访问模板组件外部定义的对象，比如console,Math等，
+        如果要访问全局命名空间中的功能，必须由组件提供 -->
+    <!-- The rounded price is {{Math.floor(getProduct(1).price)}} -->
+
+    The rounded price is {{getProductPrice(1)}}
 </div>
-
-<div [class] ="getClasses(2)">
-        The second product is {{model.getProduct(2).name}}
-    </div>
-
-    <div>
-            <H2>特殊类绑定或者叫具体类绑定，如果表达式结果为真，则该类被添加到宿主元素的class属性之中作为class成员</H2>
-        </div>
-<!-- 特殊类绑定或者叫具体类绑定，如果表达式结果为真，则该类被添加到宿主元素的class属性之中作为class成员 -->
-<div class = "p-a-1"
-[class.bg-success] = "model.getProduct(2).price < 50"
-[class.bg-info] = "model.getProduct(2).price >= 50">
-The second product is {{model.getProduct(2).name}}
-  
-</div>
-
-<div>
-        <H2>ngClass指令绑定，根据表达式返回的数据类型改变行为方式 </H2>
-        <ul>
-            <li>
-                <h3>字符串，将class字符串添加到宿主元素的class</h3>
-            </li>
-            <li>
-                    <h3> 数组，每个数组的对象都是宿主元素要加入的class名称</h3>
-            </li>
-            <li>
-                    <h3>
-                        对象，对象每个属性都是一个或多个class名称，如果属性值为真，就把该Class加入到宿主元素，实际上是种映射
-                    </h3>
-            </li>
-        </ul>
-    </div>
-
-<div class="p-a-1" [ngClass]="getClassMap(1)">
-        The first product is {{model.getProduct(1).name}}
-    </div>
-    
-<div class="p-a-1" [ngClass]="getClassMap(2)">
-        The second product is {{model.getProduct(2).name}}
-    </div>
-<div class="p-a-1" [ngClass]="getClassMap(3)">
-        The third product is {{model.getProduct(3).name}}
-    </div>
-
-
-<div>
-    <H2>样式绑定，使用标准样式绑定[style.fontSize]，表达式要带单位</H2>
-</div>
-<div class="p-a-1 bg-warning">
-    The <span [style.fontSize] = "fontSizeWithUnits">First</span>
-
-</div>
-
-<div>
-        <H2>样式绑定，使用特殊样式绑定[style.fontSize.unit]，表达式不用单位</H2>
-    </div>
-<div class="p-a-1 bg-info">
-        The <span [style.fontSize.px] = "fontSizeWithoutUnits">Second</span>
-    
-</div>
-
-<div>
-     <H2>ngStyle样式绑定，绑定到一个映射</H2>
-</div>
-<div class="p-a-1 bg-warning">
-        The <span [ngStyle]="getStyles(1)">First</span>
-        product is {{model.getProduct(1).name}}
-    
-    </div>
-    
-    <div class="p-a-1 bg-info">
-            The <span [ngStyle]="getStyles(2)">Second</span>
-            product is {{model.getProduct(2).name}}
-    </div> 
-
-    
-<!-- 手工验证绑定自动更新，需要把上面全部注释 -->
-<div [ngClass]="getClassesByPosition(0)" >
-    The first product is {{getProductByPosition(0).name}}
-
-</div>
-<div [ngClass]="getClassesByPosition(1)" >
-        The first product is {{getProductByPosition(1).name}}
-    
-    </div>
