@@ -1,136 +1,46 @@
-<!-- <div class="bg-info p-a-1">
-    There are {{model.getProducts().length}} products in the model
-</div> -->
-
-<div>
-    <H2>[textContent]是字面字符串绑定，设置div的文本内容</H2>
-</div>
-<!-- [textContent]是字面字符串绑定，设置div的文本内容 -->
-<div [ngClass]="'p-a-1 ' + getClasses(1)"  [textContent]="'Name: ' + (model.getProduct(1)?.name ||'None')"> 
-  <!-- 也可以用字符串插入绑定显示文本内容
-      Name: {{model.getProduct(1)?.name ||'None'}} -->
-
+<div class="bg-info p-a-1">
+    Selected Product: {{product.value || '(None)'}}
 </div>
 
-<div>
-        <H2>[value]标准属性绑定</H2>
-    </div>
-<div class="form-group m-t-1">
-    <label >Name:</label>
-    <input class="form-control" type="text" [value]="model.getProduct(1)?.name||'None'">
-</div>
-<div>
-        <H2>绑定js里面无法获得的dom对象的属性，例如colspan，要用[attr.colspan]</H2>
-    </div>
-
-<table class="table table-sm table-bordered table-striped m-t-1">
+<table class="table table-sm table-bordered m-t-1">
     <tr>
-        <th>1</th>
-        <th>2</th>
-        <th>3</th>
-        <th>4</th>
-        <th>5</th>
+        <th></th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
     </tr>
-    <tr>
-        <!-- 绑定js里面无法获得的dom对象的属性，例如colspan，要用[attr.colspan] -->
-        <td  [attr.colspan]="model.getProducts().length">
-        {{model.getProduct(1)?.name||'None'}}
-        </td>
-       
+    <!-- 鼠标移动到某一行，某一行背景颜色变化 -->
+    <tr *ngFor="let item of getProducts(); let i =index" [class.bg-info]="getSelected(item)">
+     <!-- <tr *ngFor="let item of getProducts(); let i =index" (mouseover)="product.value=item.name" [class.bg-info] ="product.value == item.name">  -->
+        <!-- 绑定(mouseover)事件 -->
+        <td (mouseover)="selectedProduct=item.name">{{i+1}}</td>
+        <td>{{i+1}}</td> 
+        <td>{{item.name}}</td>
+        <td>{{item.category}}</td>
+        <td>{{item.price}}</td>
     </tr>
-
-
 </table>
 
-<div>
-        <H2>类绑定，使用标准属性绑定[class]</H2>
-    </div>
-<!-- 类绑定，使用标准属性绑定[class] -->
-<div [class] ="getClasses(1)">
-    The first product is {{model.getProduct(1).name}}
+<!-- 双向绑定 -->
+<div class="form-group">
+    <label for="">Product Name</label>
+
+    <!-- <input id="" class="form-control" type="text" (input)="selectedProduct= $event.target.value" [value] = "selectedProduct || ''"> -->
+
+    <!-- 使用 [(ngModel)]进行双向绑定 -->
+    <input type="text"  class="form-control" [(ngModel)]="selectedProduct">
 </div>
+<div class="form-group">
+        <label for="">Product Name</label>
+        <!-- <input id="" class="form-control" type="text" (input)="selectedProduct= $event.target.value" [value] = "selectedProduct || ''"> -->
 
-<div [class] ="getClasses(2)">
-        The second product is {{model.getProduct(2).name}}
+            <!-- 使用 [(ngModel)]进行双向绑定 -->
+        <input type="text"  class="form-control" [(ngModel)]="selectedProduct">
     </div>
 
-    <div>
-            <H2>特殊类绑定或者叫具体类绑定，如果表达式结果为真，则该类被添加到宿主元素的class属性之中作为class成员</H2>
-        </div>
-<!-- 特殊类绑定或者叫具体类绑定，如果表达式结果为真，则该类被添加到宿主元素的class属性之中作为class成员 -->
-<div class = "p-a-1"
-[class.bg-success] = "model.getProduct(2).price < 50"
-[class.bg-info] = "model.getProduct(2).price >= 50">
-The second product is {{model.getProduct(2).name}}
-  
+<div class="form-group">
+    <label for="">Product Name</label>
+    <!-- <input id="" class="form-control" type="text" (input)="selectedProduct= $event.target.value"> -->
+
+    <input #product class="form-control" type="text" (input)="false">
 </div>
-
-<div>
-        <H2>ngClass指令绑定，根据表达式返回的数据类型改变行为方式 </H2>
-        <ul>
-            <li>
-                <h3>字符串，将class字符串添加到宿主元素的class</h3>
-            </li>
-            <li>
-                    <h3> 数组，每个数组的对象都是宿主元素要加入的class名称</h3>
-            </li>
-            <li>
-                    <h3>
-                        对象，对象每个属性都是一个或多个class名称，如果属性值为真，就把该Class加入到宿主元素，实际上是种映射
-                    </h3>
-            </li>
-        </ul>
-    </div>
-
-<div class="p-a-1" [ngClass]="getClassMap(1)">
-        The first product is {{model.getProduct(1).name}}
-    </div>
-    
-<div class="p-a-1" [ngClass]="getClassMap(2)">
-        The second product is {{model.getProduct(2).name}}
-    </div>
-<div class="p-a-1" [ngClass]="getClassMap(3)">
-        The third product is {{model.getProduct(3).name}}
-    </div>
-
-
-<div>
-    <H2>样式绑定，使用标准样式绑定[style.fontSize]，表达式要带单位</H2>
-</div>
-<div class="p-a-1 bg-warning">
-    The <span [style.fontSize] = "fontSizeWithUnits">First</span>
-
-</div>
-
-<div>
-        <H2>样式绑定，使用特殊样式绑定[style.fontSize.unit]，表达式不用单位</H2>
-    </div>
-<div class="p-a-1 bg-info">
-        The <span [style.fontSize.px] = "fontSizeWithoutUnits">Second</span>
-    
-</div>
-
-<div>
-     <H2>ngStyle样式绑定，绑定到一个映射</H2>
-</div>
-<div class="p-a-1 bg-warning">
-        The <span [ngStyle]="getStyles(1)">First</span>
-        product is {{model.getProduct(1).name}}
-    
-    </div>
-    
-    <div class="p-a-1 bg-info">
-            The <span [ngStyle]="getStyles(2)">Second</span>
-            product is {{model.getProduct(2).name}}
-    </div> 
-
-    
-<!-- 手工验证绑定自动更新，需要把上面全部注释 -->
-<div [ngClass]="getClassesByPosition(0)" >
-    The first product is {{getProductByPosition(0).name}}
-
-</div>
-<div [ngClass]="getClassesByPosition(1)" >
-        The first product is {{getProductByPosition(1).name}}
-    
-    </div>
