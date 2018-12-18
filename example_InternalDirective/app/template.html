@@ -1,0 +1,83 @@
+<div class="bg-info p-a-1">
+    There are {{getProductCount()}} products
+
+</div>
+<h4>*ngif指令</h4>
+
+<div *ngIf="getProductCount() > 4" class="bg-info p-a-1 m-t-1">
+    There are more than 4 products in the model
+</div>
+
+<div *ngIf="getProductByPosition(0).name != 'Kayak'" class="bg-info p-a-1 m-t-1">
+    The first product isn't a Kayak
+</div>
+<h4>*ngSwitch指令</h4>
+<div class="bg-info p-a-1 m-t-1" [ngSwitch] ="getProductCount()">
+    
+    <span *ngSwitchCase="2">There are 2 products</span>
+    <span *ngSwitchCase="5">There are 5 products</span>
+    <span *ngSwitchDefault>There is the default</span>
+</div>
+<h4>*ngSwitch 指令判断字符串</h4>
+<div class="bg-info p-a-1 m-t-1" [ngSwitch] ="getProduct(1).name">
+        <!-- targetName实际上是组件里面类的一个属性，而不是字符串target -->
+        <span *ngSwitchCase="targetName">Kayak</span>
+        <!-- 如果*ngSwitchCase要与字符串比较，需要在双引号里面加单引号，否则就是属性或者方法 -->
+        <span *ngSwitchCase="'Lifejacket'">Lifejacket</span>
+        <span *ngSwitchDefault>Other Product</span>
+    </div>
+
+<h4>*ngFor指令</h4>
+<table class="table table-sm table-bordered m-t-1">
+    <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+    </tr>
+    <!-- 用trackBy:getKey表示使用getKey方法判断删除的和新增的item是不是已存在的，如果是则不必重新生成html内容 -->
+    <tr *ngFor="let item of getProducts(); let i = index; let odd=odd;  let first = first;let last =last ;trackBy:getKey" 
+    [class.bg-primary]="odd"  [class.bg-info]="!odd"
+    [class.bg-warning] = "first || last"
+    >
+        <td>{{i+1}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.category}}</td>
+        <td *ngIf="!last" >{{item.price}}</td>
+    </tr>
+</table>
+
+
+<h4>使用ngTemplateOutlet指令</h4>
+
+<!-- 定义重复内容,let-text="title"定义一个上下文 -->
+<template #titleTemplate let-text="title">
+    <h4 class="p-a-1 bg-success">{{text}}</h4>
+</template>
+<!-- 使用重复内容，[ngOutletContext]="{title:'Header'}"设置上下文 -->
+<template [ngTemplateOutlet] = "titleTemplate" [ngOutletContext]="{title:'Header'}"></template>
+    <div class="bg-info p-a-1 m-a-1">
+        There are {{getProductCount()}} products.
+    </div>
+
+<template [ngTemplateOutlet] = "titleTemplate" [ngOutletContext]="{title:'Footer'}">
+
+</template>
+
+
+<h4>使用指令和模板绑定的限制</h4>
+<div class="bg-info p-a-1">
+    <!-- 在绑定中出现运算符会报错 -->
+    <!-- Counter:{{counter=counter+1}} -->
+
+    <!-- 不能再模板的绑定中修改数据 -->
+    <!-- Next product is {{nextProduct.name}} -->
+
+    <!-- There are {{getProductCount()}} products -->
+
+    <!-- 由于存在表达式上下文，所以表达式无法访问模板组件外部定义的对象，比如console,Math等，
+        如果要访问全局命名空间中的功能，必须由组件提供 -->
+    <!-- The rounded price is {{Math.floor(getProduct(1).price)}} -->
+
+    The rounded price is {{getProductPrice(1)}}
+</div>

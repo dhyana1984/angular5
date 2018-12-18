@@ -1,0 +1,207 @@
+<div class="bg-info p-a-1">
+    Selected Product: {{product.value || '(None)'}}
+</div>
+
+<table class="table table-sm table-bordered m-t-1">
+    <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+    </tr>
+    <!-- 鼠标移动到某一行，某一行背景颜色变化 -->
+    <tr *ngFor="let item of getProducts(); let i =index" [class.bg-info]="getSelected(item)">
+     <!-- <tr *ngFor="let item of getProducts(); let i =index" (mouseover)="product.value=item.name" [class.bg-info] ="product.value == item.name">  -->
+        <!-- 绑定(mouseover)事件 -->
+        <td (mouseover)="selectedProduct=item.name">{{i+1}}</td>
+        <td>{{i+1}}</td> 
+        <td>{{item.name}}</td>
+        <td>{{item.category}}</td>
+        <td>{{item.price}}</td>
+    </tr>
+</table>
+
+<!-- 双向绑定 -->
+<div class="form-group">
+    <label for="">Product Name</label>
+
+    <!-- <input id="" class="form-control" type="text" (input)="selectedProduct= $event.target.value" [value] = "selectedProduct || ''"> -->
+
+    <!-- 使用 [(ngModel)]进行双向绑定 -->
+    <input type="text"  class="form-control" [(ngModel)]="selectedProduct">
+</div>
+<div class="form-group">
+        <label for="">Product Name</label>
+        <!-- <input id="" class="form-control" type="text" (input)="selectedProduct= $event.target.value" [value] = "selectedProduct || ''"> -->
+
+            <!-- 使用 [(ngModel)]进行双向绑定 -->
+        <input type="text"  class="form-control" [(ngModel)]="selectedProduct">
+    </div>
+
+<div class="form-group">
+    <label for="">Product Name</label>
+    <!-- <input id="" class="form-control" type="text" (input)="selectedProduct= $event.target.value"> -->
+
+    <input #product class="form-control" type="text" (input)="false">
+</div>
+
+<div class="bg-info p-a-1 m-b-1">
+     Model Data: {{jsonProduct}}
+</div>
+<!--显示验证消息需要自定义样式  -->
+<style>
+
+input.ng-dirty.ng-invalid {border:2px solid #ff0000}
+input.ng-dirty.ng-valid{border: 2px solid #6bc502}
+</style>
+
+
+<!-- <form action="" novalidate (ngSubmit)="submitForm(newProduct)" >
+<div class="form-group">
+    <label for="">Name</label>
+    <input id="" class="form-control" type="text" 
+    [(ngModel)]="newProduct.name" 
+    required 
+    minlength="5" 
+    pattern="^[A-Za-z ]+$" 
+    name="name" 
+    #name="ngModel">  -->
+<!-- 模板显示验证消息 -->
+<!-- <ul class="text-danger list-unstyled" *ngIf="name.dirty && name.invalid" >
+    <li *ngIf="name.errors?.required" > You must enter a product</li>
+    <li *ngIf="name.errors.minlength" >Product name must be at least {{name.errors.minlength.requiredLength}}</li>
+    <li *ngIf="name.errors.pattern" >Product name can only contain letters and spaces</li>
+</ul> -->
+<!-- 使用组件显示验证消息 -->
+<!-- <h4>使用组件显示验证消息</h4>
+<ul class="text-danger list-unstyled" *ngIf="(formSubmitted || name.dirty) && name.invalid" >
+        <li *ngFor="let error of getValidationMessage(name)" >
+            {{error}}
+        </li>
+    </ul>
+</div>
+<div class="form-group">
+    <label for="">Category</label>
+    <input id="" class="form-control" type="text" [(ngModel)]="newProduct.category" name="category"
+    [(ngModel)]="newProduct.category" 
+    required minlength="3" 
+    pattern="^[A-Za-z ]+$" 
+    name="category" 
+    #category="ngModel"
+    >
+</div>
+<ul class="text-danger list-unstyled" *ngIf="(formSubmitted || category.dirty) && category.invalid" >
+        <li *ngFor="let error of getValidationMessage(category)" >
+            {{error}}
+        </li>
+    </ul>
+<div class="form-group">
+    <label for="">Price</label>
+    <input id="" class="form-control" type="text" 
+    [(ngModel)]="newProduct.price" 
+    name="price" 
+    #price="ngModel" 
+    required 
+    pattern="^[0-9\.]+$">
+</div>
+<ul class="text-danger list-unstyled" *ngIf="(formSubmitted || price.dirty) && price.invalid" >  
+    <li *ngFor="let error of getValidationMessage(price)" >
+        {{error}}
+    </li>
+</ul> -->
+<!-- <button class="btn btn-primary" type="button" (click)="addProduct(newProduct)">Create</button> -->
+<!-- <button class="btn btn-primary" type="submit" [disabled] = "formSubmitted ||form.invalid"
+[class.btn-secondary] = "formSubmitted && form.invalid">Create</button> 
+</form> -->
+
+<!-- 使用表单验证，定义form模板引用变量，并被赋值为ngForm -->
+<!-- <h4>使用表单验证</h4>
+<form #form="ngForm" novalidate (ngSubmit)="submitForm(form)" >
+    <div class="bg-danger p-a-1 m-b-1 m-t-1" *ngIf="formSubmitted && form.invalid" >
+        There are problems with the form -->
+        <!-- 表单验证时候显示摘要信息，通过调用表单范围验证方法 -->
+        <!-- <ul>
+                <li *ngFor="let error of getFormValidationMessages(form)" >
+                    {{error}}
+                </li>
+            </ul>
+    </div>
+        <div class="form-group">
+            <label for="">Name</label>
+            <input id="" class="form-control" type="text" 
+            [(ngModel)]="newProduct.name" 
+            required 
+            minlength="5" 
+            pattern="^[A-Za-z ]+$" 
+            name="name" 
+            #name="ngModel"> 
+
+        </div>
+        <button class="btn btn-primary" type="submit">Create</button> 
+</form> -->
+
+<!-- 使用基于模型的验证需要formGroup指令 -->
+<form [formGroup]="form" novalidate (ngSubmit)="submitForm(form)" >
+        <div class="bg-danger p-a-1 m-b-1 m-t-1" *ngIf="formSubmitted && form.invalid" >
+            There are problems with the form 
+       
+           <ul>
+                    <li *ngFor="let error of form.getFormValidationMessages()" >
+                        {{error}}
+                    </li>
+            </ul>
+        </div>
+            <!-- <div class="form-group">
+                <label for="">Name</label>
+                <input id="" class="form-control" type="text" 
+                [(ngModel)]="newProduct.name" 
+                formControlName="name"> 
+                <ul class="text-danger list-unstyled" 
+                *ngIf="(formSubmitted || form.controls['name'].dirty) && form.controls['name'].invalid" >
+                    <li *ngFor="let error of form.controls['name'].getValidationMessages()" >
+                        {{error}}
+                    </li>
+                </ul>
+            </div>
+            <div class="form-group">
+                    <label for="">Categpory</label>
+                    <input id="" class="form-control" type="text" 
+                    [(ngModel)]="newProduct.category" 
+                    formControlName="category"> 
+                    <ul class="text-danger list-unstyled" 
+                    *ngIf="(formSubmitted || form.controls['category'].dirty) && form.controls['category'].invalid" >
+                        <li *ngFor="let error of form.controls['category'].getValidationMessages()" >
+                            {{error}}
+                        </li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                        <label for="">Price</label>
+                        <input id="" class="form-control" type="text" 
+                        [(ngModel)]="newProduct.price" 
+                        formControlName="price"> 
+                        <ul class="text-danger list-unstyled" 
+                        *ngIf="(formSubmitted || form.controls['price'].dirty) && form.controls['price'].invalid" >
+                            <li *ngFor="let error of form.controls['price'].getValidationMessages()" >
+                                {{error}}
+                            </li>
+                        </ul>
+                    </div> -->
+        <!-- 根据表单模型生成模板，替代上面的复杂模板 -->
+         <div class="form-group" *ngFor="let control of form.ProductControls" >
+             <label for="">{{control.label}}</label>
+             <input id="" class="form-control" type="text"
+             [(ngModel)]="newProduct[control.modelProperty]"
+             name="{{control.modelProperty}}"
+             formControlName = "{{control.modelProperty}}"
+             >
+             <ul class="text-danger list-unstyled" *ngIf="(formSubmitted || control.dirty)&&control.invalid" >
+                 <li *ngFor="let error of control.getValidationMessages()" >
+                        {{error}}
+                 </li>
+
+             </ul>
+         </div>
+                    <button class="btn btn-primary" type="submit" 
+                    [class.btn-secondary] = "formSubmitted && form.invalid">Create</button> 
+    </form> 
