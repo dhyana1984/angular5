@@ -1,0 +1,109 @@
+<style>
+
+        input.ng-dirty.ng-invalid {border:2px solid #ff0000}
+        input.ng-dirty.ng-valid{border: 2px solid #6bc502}
+    </style>
+    
+    <div class="col-xs-4">
+    <form [formGroup]="form" novalidate (ngSubmit)="submitForm(form)" >
+         <div class="form-group" *ngFor="let control of form.ProductControls" >
+             <label for="">{{control.label}}</label>
+             <input id="" class="form-control" type="text"
+             [(ngModel)]="newProduct[control.modelProperty]"
+             name="{{control.modelProperty}}"
+             formControlName = "{{control.modelProperty}}"
+             >
+             <ul class="text-danger list-unstyled" *ngIf="(formSubmitted || control.dirty)&&control.invalid" >
+                 <li *ngFor="let error of control.getValidationMessages()" >
+                        {{error}}
+                 </li>
+    
+             </ul>
+         </div>
+                    <button class="btn btn-primary" type="submit"
+                    [class.btn-secondary] = "formSubmitted && form.invalid">Create</button>
+    </form>
+    </div>
+    <div class="col-xs-8">
+<div class="checkbox">
+    <label>
+        <input type="checkbox" [(ngModel)]="showTable">
+        Show Table
+    </label>
+</div>
+<div class="checkbox">
+        <label>
+            <input type="checkbox" [(ngModel)]="darkColor">
+            Dark Cell Color
+        </label>
+    </div>
+
+<!-- 结构指令标准语法 -->
+<!-- <template [paIf]="showTable">
+    <table class="table table-sm table-bordered table-striped">
+        <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        </tr>
+        <tr *ngFor="let item of getProducts(); let i =index" 
+        [pa-attr] ="getProducts().length < 6?'bg-success':'bg-warning'"
+        [pa-product]="item" (pa-category) ="newProduct.category=$event"
+        
+        >
+            <td>{{i+1}}</td>
+            <td>{{item.name}}</td>
+            <td [pa-attr] ="item.category=='Soccer'? 'bg-info': null">{{item.category}}</td>
+            <td [pa-attr] ="'bg-info'">{{item.price}}</td>
+        </tr>
+    </table>
+</template> -->
+
+<!-- 结构指令简洁语法*paIf -->
+
+<table class="table table-sm table-bordered table-striped" *paIf="showTable" [PaCellDarkColor]="darkColor">
+    <tr>
+    <th></th>
+    <th>Name</th>
+    <th>Category</th>
+    <th>Price</th>
+    <th></th>
+    </tr>
+    <!-- lte-item是定义隐式值 -->
+    <!-- 使用let-<name> 属性语法创建模板变量，并分配一个上下文数据值-->
+    <!-- <template [paForOf]="getProducts()" let-item let-i="index" let-odd="odd" let-even="even">
+        <tr [class.bg-info]="odd" [class.bg-warning]="even">
+            <td>{{i+1}}</td>
+            <td>
+                {{item.name}}
+            </td>
+            <td>
+                {{item.category}}
+            </td>
+            <td>
+                 {{item.price}}
+            </td>
+        </tr>
+        
+    </template> -->
+    <!-- 使用简洁结构语法 *paFor-->
+    <tr [class.bg-info]="odd" [class.bg-warning]="even" 
+    *paFor="let item of getProducts(); let i= index; let odd = odd; let even= even">
+            <td>{{item.id}}</td>
+            <td>
+                {{item.name}}
+            </td>
+            <td>
+                {{item.category}}
+            </td>
+            <td>
+                 {{item.price}}
+            </td>
+            <td class="text-xs-cdnter">
+                <button class="btn btn-danger btn-sm" (click) = "deleteProduct(item.id)">Delete</button>
+
+            </td>
+        </tr>
+</table>
+</div>
