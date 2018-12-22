@@ -1,0 +1,11 @@
+div{
+    background-color: lightcoral;
+}
+/* 将该子组件的样式应用到宿主元素 */
+:host:hover{ 
+    font-size: 25px;
+}
+/* 只有宿主元素的某个祖先元素是css类angularApp的成员，这个样式应用到组件模板的input元素 */
+:host-context(.angularApp) input{
+    background-color: lightgray;
+}
