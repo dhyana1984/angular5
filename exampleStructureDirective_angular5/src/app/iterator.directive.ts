@@ -36,9 +36,9 @@ export class PaIteratorDirective{
         let changes = this.differ.diff(this.dataSource);
         if(changes!=null){
             console.log("ngDoCheck Called, changes detected");
-            //forEachAddedItem方法的函数参数，这个函数参数接收一个ChangeDetectorRef对象，对集合中每个新对象调用指定函数
-            //addition就是一个ChangeDetectorRef对象 
-            //item是这个属性返回数据项，trackById如果使用trackBy函数，这个属性返回标识值,currentIndex返回当前索引
+            //forEachAddedItem方法的函数参数，这个函数参数接收一个IterableChangeRecord对象，对集合中每个新对象调用指定函数
+            //addition就是一个IterableChangeRecord对象 
+            //item是IterableChangeRecord返回数据项，trackById如果使用trackBy函数，这个返回IterableChangeRecord标识值,currentIndex返回IterableChangeRecord当前索引
             changes.forEachAddedItem(addition =>{
                 let context = new PaIteratorContext(addition.item, addition.currentIndex,changes.length);
                 context.view = this.container.createEmbeddedView(this.template, context);
@@ -53,7 +53,7 @@ export class PaIteratorDirective{
             //从视图容器中删除与该对象关联的内容
             changes.forEachRemovedItem(removal =>{
                 removals= true;
-                let context =this.views.get(removal.trackById);//使用set方法获取map的值
+                let context =this.views.get(removal.trackById);//通过get方法检索
                 if(context != null ){
                     this.container.remove(this.container.indexOf(context.view));
                     this.views.delete(removal.trackById);//使用delete删除map的项
