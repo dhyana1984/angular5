@@ -1,0 +1,85 @@
+<div>
+    <label for="">Number of items:</label>
+
+    <select [value]="itemCount ||1" (change)="itemCount=$event.target.value">
+        <option *ngFor="let item of getProducts(); let i = index" [value]="i+1" >
+                {{i+1}}
+        </option>
+    </select>
+</div>
+
+<div >
+    <label>Tax Rate:</label>
+    <select [value] = "taxRate || 0" (change)="taxRate=$event.target.value">
+        <option value="0">None</option>
+        <!-- 百分比管道-->
+        <option value="10">{{0.1 | percent}}</option>
+        <option value="20">{{0.2 | percent }} </option>
+        <option value="50">{{0.5 | percent }} </option>
+        <option value="150">{{1.5 | percent }} </option>
+    </select>
+</div>
+<div >
+    <label>Category Filter:</label>
+    <select [(ngModel)]="categoryFilter">
+        <option >Watersports</option>
+        <option >Soccer</option>
+        <option >Chess</option>
+
+    </select>
+</div>
+
+  <!-- 创建json字符串管道，在调试中尤其有用，这个管道的pure值是false，所以任何变化都会触发transform方法 
+<div class="bg-info m-a-1 p-a-1">
+  
+    <div> {{getProducts() | json}} </div>
+</div>-->
+
+<!-- 使用date管道来格式化不同格式的日期 
+<div class="bg-info m-a-1 p-a-1">
+    <div> Date formatted from object:{{dateObject | date}} </div>
+    <div> Date formatted from string:{{dateString | date}} </div>
+    <div> Date formatted from number:{{dateNumber | date}} </div>
+    <div> Date formatted as shortDate:{{dateObject | date : "shortDate"}} </div>
+    <div> Date formatted as mediumDate:{{dateObject | date : "mediumDate"}} </div>
+    <div> Date formatted as longDate:{{dateObject | date : "longDate"}} </div>
+
+</div>
+-->
+<table class="table table-sm table-bordered table-striped">
+        <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th></th>
+        </tr>
+
+        <tr [class.bg-info]="odd" [class.bg-warning]="even"
+        *paFor="let item of getProducts() | filter:categoryFilter|slice:0:(itemCount ||1) ; let i= index; let odd = odd; let even= even">
+                <td style="vertical-align:middle">{{item.id}}</td>
+                <td style="vertical-align:middle">
+                    <!-- 大写管道 -->
+                    {{item.name | uppercase}}
+                </td>
+                <td style="vertical-align:middle">
+                     <!-- 小写管道 -->
+                    {{item.category | lowercase}}
+                </td>
+                <td style="vertical-align:middle">
+                    <!-- 使用组合管道，先利用自定义管道计算税，然后用默认管道变成美元格式 -->
+                   <!-- {{item.price | addTax:(taxRate || 0) | currency:"USD":"true"}} -->
+                    <!--number管道的参数格式 <指定显示整数值的最少位数,默认1>.<指定小数点后数字最少位数，默认0>-<指定小数点后数字最大位数，默认3> -->
+                   <!-- {{item.price | number:"3.2-2"}} -->
+                    <!--currency管道的参数格式 <货币种类，默认USD>:<是否显示货币符号>:<number格式化数值> -->
+                   <!-- {{item.price | currency:"USD":"true":"2.2-2" }}  -->
+
+                   {{item.price| addTax:(taxRate || 0) | currency :"USD":"true":"2.2-2"}}
+                   <!-- {{item.price}} -->
+                </td>
+                <td class="text-xs-cdnter">
+                    <button class="btn btn-danger btn-sm" (click) = "deleteProduct(item.id)">Delete</button>
+
+                </td>
+            </tr>
+    </table>
