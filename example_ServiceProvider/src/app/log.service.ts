@@ -1,5 +1,7 @@
-import {Injectable} from "@angular/core";
-import { P } from "@angular/core/src/render3";
+import {Injectable, InjectionToken} from "@angular/core";
+
+export const LOG_SERVICE = new InjectionToken("logger")//使用InjectionToken，会产生唯一的token，强于直接用字符串作为Token, 用const是因为不能变
+export const LOG_LEVEL= new InjectionToken("log_level")
 export enum LogLevel{
     DEBUG,
     INFO,
@@ -23,6 +25,22 @@ export class LogService{
     logMessage(level:LogLevel, message:string){
         if(level>= this.minimumLevel){
             console.log(`Message (${LogLevel[level]}):${message}`)
+        }
+    }
+
+
+}
+
+@Injectable()
+export class SpecialLogService extends LogService{
+    constructor(){
+        super();
+        this.minimumLevel=LogLevel.DEBUG;
+    }
+
+    logMessage(level:LogLevel,message:string){
+        if(level >= this.minimumLevel){
+            console.log(`Special Message (${LogLevel[level]}): ${message}`);
         }
     }
 }
