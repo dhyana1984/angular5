@@ -1,0 +1,24 @@
+<form [formGroup]="form" novalidate (ngSubmit)="submitForm(form)" >
+         <div class="form-group" *ngFor="let control of form.ProductControls" >
+             <label for="">{{control.label}}</label>
+             <input id="" class="form-control" type="text"
+             [(ngModel)]="newProduct[control.modelProperty]"
+             name="{{control.modelProperty}}"
+             formControlName = "{{control.modelProperty}}"
+             >
+             <ul class="text-danger list-unstyled" *ngIf="(formSubmitted || control.dirty)&&control.invalid" >
+                 <li *ngFor="let error of control.getValidationMessages()" >
+                        {{error}}
+                 </li>
+
+             </ul>
+         </div>
+                    <button class="btn btn-primary" type="submit" 
+                    [class.btn-secondary] = "formSubmitted && form.invalid">Create</button> 
+    </form> 
+<!-- <div class="bg-info m-t-1 p-a-1">
+    View Child Value: <span paDisplayValue></span>
+</div>
+<div class="bg-info m-t-1 p-a-1">
+    Content Child Value: <ng-content></ng-content>
+</div> -->
