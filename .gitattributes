@@ -1,8 +1,7 @@
 
 *.js linguist-language=JavaScript
 *.css linguist-language=CSS
-*.html linguist-language=Html
+*.html linguist-language=HTML
 *.ts linguist-language=TypeScript
-*.json linguist-language=Json
 *.cs linguist-language=C#
 
