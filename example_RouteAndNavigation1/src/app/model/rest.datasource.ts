@@ -45,7 +45,7 @@ export class RestDataSource{
         return this.sendRequest(RequestMethod.Delete,`${this.url}/${id}`);
     }
 
-    private sendRequest(verb:RequestMethod, url: string, body?: Product) : Observable<Product>{
+    private sendRequest(verb:RequestMethod, url: string, body?: Product) {
         let headers = new Headers();
         headers.set("Access-Key","<secret>");
         headers.set("Application-Name",["exampleApp","proAngular"]);//header的属性可以设置多个值

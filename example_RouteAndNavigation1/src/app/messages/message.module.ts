@@ -3,8 +3,9 @@ import {BrowserModule} from "@angular/platform-browser"
 import {MessageService} from "./message.service";
 import { MessageComponent } from "./message.component";
 import { MessageErrorHandler } from "./errorHandler";
+import { RouterModule } from "@angular/router";
 @NgModule({
-    imports:[BrowserModule],
+    imports:[BrowserModule,RouterModule],
     declarations:[MessageComponent],
     exports:[MessageComponent],
     providers:[MessageService,

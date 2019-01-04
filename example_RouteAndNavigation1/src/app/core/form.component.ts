@@ -2,12 +2,7 @@ import { Component, Inject} from "@angular/core";
 import { NgForm} from "@angular/forms";
 import { Product } from "../model/product.model";
 import {Model} from "../model/repository.model";
-import {MODES,SharedState,SHARED_STATE} from "./sharedState.model"
-import {Observable} from "rxjs/Observable"
-import "rxjs/add/operator/filter"
-import "rxjs/add/operator/map"
-import "rxjs/add/operator/distinctUntilChanged";
-import "rxjs/add/operator/skipWhile"
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
     selector: "paForm",
@@ -18,45 +13,42 @@ import "rxjs/add/operator/skipWhile"
 export class FormComponent {
     product:Product= new Product();
     lastId:number;
-    constructor(private model:Model,    
-        @Inject(SHARED_STATE) private stateEvents: Observable<SharedState>){
-        stateEvents
-            //忽略事件，慎用
-            //.skipWhile(state => state.mode==MODES.EDIT)
-            //.map(state => state.mode == MODES.EDIT? state.id : -1)
-            //点击edit以后，修改字段，然后再点击edit，修改不会丢失
-            //distinctUntilChanged不知道如何比较对象总是假定任何对象都是不同，所以可以自定义一个比较函数
-            //.distinctUntilChanged((firstState, secondState) => firstState.mode == secondState.mode && firstState.id==secondState.id) 
-            // .filter(id => id!=3)
-            .subscribe(update => {
-            this.product = new Product();
-            if(update.id != undefined){
-                Object.assign(this.product, this.model.getProduct(update.id));
+    constructor(private model:Model, activeRoute:ActivatedRoute, private router:Router){
+        //通过activeRoute.snapshot.url取到路由地址，然后判断是否是edit一以此来更新状态
+        //this.editing = activeRoute.snapshot.url[1].path == "edit";
+
+        //通过activeRoute.snapshot.params["mode"]获取app.routing.ts中定义的合并的路由的路由参数:mode
+        this.editing = activeRoute.snapshot.params["mode"] == "edit";
+        let id =activeRoute.snapshot.params["id"];
+        if(id != null){
+            //接收name, category, price 三个可选参数
+            let name = activeRoute.snapshot.params["name"];
+            let category = activeRoute.snapshot.params["category"];
+            let price = activeRoute.snapshot.params["price"];
+            if(name!= null && category!= null && price!= null){
+                this.product.id=id;
+                this.product.name=name;
+                this.product.category=category;
+                this.product.price=price;
+            } else{//如果可选参数不存在，则使用模型查询
+                //这里的||new Product()是有必要的，因为异步请求数据可能还没到达，如果直接访问会报错
+                
+                Object.assign(this.product,model.getProduct(id)||new Product())
             }
-            this.editing = update.mode == MODES.EDIT;
-        })
+        }
        
     }
     editing : boolean =false;
     submitForm(form: NgForm) {
         if (form.valid) {
             this.model.saveProduct(this.product);
-            this.product = new Product();
-            form.reset();
+            //提交完修改或新增以后回到table，所以不需要这些了
+            // this.product = new Product();
+            // form.reset();
+            this.router.navigateByUrl("/");
         }
     }
     resetForm(){
         this.product = new Product();
     }
-    //使用ngDoCheck可能会在状态变更时产生问题，以及难以维护复杂逻辑的变更
-    // ngDoCheck(): void {
-    //     if(this.lastId != this.state.id){
-    //         this.product = new Product();
-    //         if(this.state.mode == MODES.EDIT){
-    //             Object.assign(this.product, this.model.getProduct(this.state.id));
-    //         }
-    //         this.lastId = this.state.id;
-    //     }
-        
-    // }
 }

@@ -22,9 +22,16 @@
     
             <td class="text-xs-cdnter">
                 <button class="btn btn-danger btn-sm" (click) = "deleteProduct(item.id)">Delete</button>
-                <button class="btn btn-danger btn-sm" (click) = "editProduct(item.id)">Edit</button>
+                <!-- [routerLink]="['/form','edit', item.id]" 可以将routerLink的值组合起来，/form/edit/1 -->
+                <!-- 后面的{name: item.name, category: item.category, price:item.price}是可选参数 -->
+                 <!-- 由于使用路由，可以从路由片段获取字符串作为状态，所以去掉了(click) = "editProduct(item.id)" 这样的事件绑定 -->
+                <button class="btn btn-danger btn-sm" 
+                [routerLink]="['/form','edit', item.id,
+                {name: item.name, category: item.category, price:item.price}]">
+                Edit
+                </button>
             </td>
         </tr>
 </table>   
-<button class="btn btn-primary" (click) = "createProduct()">Create New Product</button>
+<button class="btn btn-primary"  routerLink="/form/create">Create New Product</button>
 <button class="btn btn-danger" (click)="deleteProduct(-1)" >Generate HTTP Error</button>
