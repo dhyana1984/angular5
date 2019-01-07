@@ -1,0 +1,77 @@
+<div class="col-xs-3">
+    <!-- 由于All的 routerLink= "/"匹配了所有的路由，所以All按钮一直有active的css
+        通过[routerLinkActiveOptions] = "{exact:true}" ，表示只有在精确匹配活动路由URL的情况下才会执行routerLinkActive = "active"-->
+    <button class="btn btn-secondary btn-block" 
+    routerLink= "/" routerLinkActive = "active" [routerLinkActiveOptions] = "{exact:true}">
+        All
+    </button>
+    <button *ngFor="let category of categories"  class="btn btn-secondary btn-block" 
+    [routerLink]= "['/table',category]" routerLinkActive = "active">
+        {{category}}
+    </button>
+</div>
+
+
+<div class="col-xs-9">
+    <!-- 子路由按钮 -->
+    <div class="m-b-1">
+        <!-- 点击显示ProductCountComponent组件的模板 -->
+        <!-- <button class="btn btn-info" routerLink="/table/products">
+            Count Products
+        </button> 
+          <button class="btn btn-primary" routerLink="/table/categories">
+            Count Categories
+        </button>-->
+        <!-- 直接用子路由的相对URL -->
+        <button class="btn btn-info" routerLink="products">
+            Count Products
+        </button> 
+        <button class="btn btn-primary" routerLink="categories">
+            Count Categories
+        </button>
+
+        
+        <!-- <button class="btn btn-secondary" routerLink="/table">
+            Count Neither
+        </button> -->
+        <div class="m-t-1">
+            <!-- 子路由出口 -->
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+    <table class="table table-sm table-bordered table-striped">
+        <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th></th>
+        </tr>
+
+        <tr *ngFor="let item of getProducts()">
+                <td style="vertical-align:middle">{{item.id}}</td>
+                <td style="vertical-align:middle">
+                    {{item.name }}
+                </td>
+                <td style="vertical-align:middle">  
+                    {{item.category}}
+                </td>
+                <td style="vertical-align:middle">
+                {{item.price |currency:"USD":"true"}}
+                </td>
+        
+                <td class="text-xs-cdnter">
+                    <button class="btn btn-danger btn-sm" (click) = "deleteProduct(item.id)">Delete</button>
+                    <button class="btn btn-danger btn-sm" 
+                    [routerLink]="['/form','edit', item.id]">
+                    Edit
+                    </button>
+                </td>
+            </tr>
+    </table>   
+</div>
+<div class="col-xs-12 p-a-1">
+    <button class="btn btn-primary"  routerLink="/form/create">Create New Product</button>
+    <button class="btn btn-danger" (click)="deleteProduct(-1)" >Generate HTTP Error</button>
+    <button class="btn btn-danger" routerLink="/does/not/exist">Generate Routing Error</button>
+</div>
