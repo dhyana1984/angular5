@@ -12,6 +12,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 })
 export class FormComponent {
     product:Product= new Product();
+    oringinalProduct = new Product();//用来储存初始的表单状态，发生改变后会触发路由失活守卫
     lastId:number;
     constructor(private model:Model, activeRoute:ActivatedRoute, private router:Router){
         //在组件内导航  
@@ -21,7 +22,8 @@ export class FormComponent {
             this.editing = activeRoute.snapshot.params["mode"] == "edit";
             let id = params["id"];
             if(id != null){             
-                Object.assign(this.product,model.getProduct(id)||new Product())  
+                Object.assign(this.product,model.getProduct(id)||new Product())
+                Object.assign(this.oringinalProduct,this.product);
             }
         })
 
@@ -34,10 +36,11 @@ export class FormComponent {
             //提交完修改或新增以后回到table，所以不需要这些了
             // this.product = new Product();
             // form.reset();
+            this.oringinalProduct = this.product;
             this.router.navigateByUrl("/");
         }
     }
-    resetForm(){
-        this.product = new Product();
-    }
+    // resetForm(){
+    //     this.product = new Product();
+    // }
 }

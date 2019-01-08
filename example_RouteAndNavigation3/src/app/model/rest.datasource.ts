@@ -62,7 +62,7 @@ export class RestDataSource{
             // })
             headers:headers
         }))
-        .delay(5000)//利用rxjs的delay方法添加数据返回的延迟
+        .delay(2000)//利用rxjs的delay方法添加数据返回的延迟
         .map( t=> t.json())
         //使用Observable的catch和throw对象来处理错误
         .catch((error: Response) => Observable.throw(`Network Error: ${error.statusText} (${error.status})`));
