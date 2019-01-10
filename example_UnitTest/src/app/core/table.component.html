@@ -1,0 +1,52 @@
+<div class="form-group bg-info p-a-1">
+    <label for="">Category</label>
+    <select name="" id="" [(ngModel)]="highlightCategory" class="form-control">
+        <option value="">None</option>
+        <option *ngFor="let category of categories" >{{category}}</option>
+    </select>
+</div>
+
+<table class="table table-sm table-bordered table-striped">
+    <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Category</th>
+    <th>Price</th>
+    <th></th>
+    </tr>
+    <!-- @rowHighlight绑定目标就是动画触发器的名字，以@作为前缀，这是一个动画绑定 
+        rowHighlight就是trigger("rowHighlight",xx){xx} 
+        对数据绑定表达式求值，告诉Angular宿主元素被赋予了哪个动画状态
+        动画绑定目标告诉Angular哪个动画目标为元素状态定义了CSS样式
+        (@rowHighlight.start)和(@rowHighlight.done)绑定writeAnimationEvent组件方法，
+        该组件方法可以得到事件、tr元素显示的产品名称，以及这个事件是不是一个起始时间的判断
+    
+    -->
+    <tr *ngFor="let item of getProducts()" 
+    [@rowHighlight]="getRowState(item.category)"
+    (@rowHighlight.start)="writeAnimationEvent($event, item.name, true)"
+    (@rowHighlight.done)="writeAnimationEvent($event, item.name, false)">
+            <td style="vertical-align:middle">{{item.id}}</td>
+            <td style="vertical-align:middle">
+                {{item.name }}
+            </td>
+            <td style="vertical-align:middle">  
+                {{item.category}}
+            </td>
+            <td style="vertical-align:middle">
+            {{item.price |currency:"USD":"true"}}
+            </td>
+    
+            <td class="text-xs-cdnter">
+                <button class="btn btn-danger btn-sm" (click) = "deleteProduct(item.id)">Delete</button>
+                <button class="btn btn-danger btn-sm" 
+                [routerLink]="['/form','edit', item.id]">
+                Edit
+                </button>
+            </td>
+        </tr>
+</table>   
+
+<div class="col-xs-12 p-a-1">
+    <button class="btn btn-primary"  routerLink="/form/create">Create New Product</button>
+</div>
