@@ -18,8 +18,8 @@ export class FirstComponent{
         return this.repository.getProducts().filter(t => t.category==this.category)
     }
 
-    @HostListener("mouseenter",["#event.type"])
-    @HostListener("mouseleave",["#event.type"])
+    @HostListener("mouseenter",["$event.type"])
+    @HostListener("mouseleave",["$event.type"])
     setHightlight(type:string){
         this.highlighted = type=="mouseenter";
     }
