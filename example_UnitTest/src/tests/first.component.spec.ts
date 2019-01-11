@@ -2,16 +2,29 @@ import { TestBed, ComponentFixture,async } from "@angular/core/testing";
 import { FirstComponent } from "app/ondemand/first.component";
 import { Product } from "app/model/product.model";
 import { Model } from "app/model/repository.model";
-import { DebugElement } from "@angular/core";
+import { DebugElement, Component, ViewChild } from "@angular/core";
 import { By } from "@angular/platform-browser";
+@Component({
+    template: `<first [pa-model]="model"></first>`
+})
+class TestComponent{
+    constructor(public model:Model){
 
+    }
+    @ViewChild(FirstComponent)
+    firstComponent: FirstComponent;
+}
 describe("FirstComponent", () =>{
     //ComponentFixture<FirstComponent>对象为测试组件提供了功能支持
     let fixture:ComponentFixture<FirstComponent>;
+    let fixtureTestComponent : ComponentFixture<TestComponent>;
     let component: FirstComponent;
+    let componentTestComponent: FirstComponent;
+    let debugElementTestComponent:DebugElement
     let debugElement:DebugElement;
     let bindingElement:HTMLSpanElement;
     let spanElement:HTMLSpanElement;
+    let divElement:HTMLDivElement;
     let mockRepository={
         getProducts: function(){
             return [
@@ -26,7 +39,7 @@ describe("FirstComponent", () =>{
         //TestBed是Angular单元测试的核心， 负责模拟Angular的环境。TestBed在beforeEach中使用，否则会报错
         //configureTestingModule方法用于配置Angular测试模块
         TestBed.configureTestingModule({
-            declarations:[FirstComponent],
+            declarations:[FirstComponent,TestComponent],
             providers:[
                 {provide:Model,useValue:mockRepository}
             ]
@@ -46,9 +59,13 @@ describe("FirstComponent", () =>{
         //compileComponents会返回一个Promise，因为在编译结束时必须使用这个Promise来完成测试设置
         TestBed.compileComponents().then(() =>{
             fixture = TestBed.createComponent(FirstComponent);
+            fixtureTestComponent = TestBed.createComponent(TestComponent);
             component = fixture.componentInstance;
+            componentTestComponent = fixtureTestComponent.componentInstance.firstComponent;
             debugElement= fixture.debugElement;
+            debugElementTestComponent = fixtureTestComponent.debugElement.query(By.directive(FirstComponent));
             spanElement = debugElement.query(By.css("span")).nativeElement;
+            divElement = debugElement.children[0].nativeElement;
             
         });
     }));
@@ -75,9 +92,52 @@ describe("FirstComponent", () =>{
         // fixture.detectChanges();
         // expect(component.getProducts().length).toBe(0);
         // expect(bindingElement.textContent).toContain("0");
-        component.category= "Chess";
+
+
+    })
+    it("componment with template", () =>{
+        // //测试带有外部模板的组件
+        // component.category= "Chess";
+        // fixture.detectChanges();
+        // expect(component.getProducts().length).toBe(1);
+        // expect(spanElement.textContent).toContain("1")
+    })
+     //测试组件的事件
+    it("handles mouse events" ,()=>{
+               
+        //toBeFalsy表示断言结果为假
+        expect(component.highlighted).toBeFalsy();
+        expect(divElement.classList.contains("bg-success")).toBeFalsy();
+        //debugElement.triggerEventHandler触发事件mouseenter
+        debugElement.triggerEventHandler("mouseenter", new Event("mouseenter"));
         fixture.detectChanges();
-        expect(component.getProducts().length).toBe(1);
-        expect(spanElement.textContent).toContain("1")
+        //toBeTruthy断言结果为真
+        expect(component.highlighted).toBeTruthy();
+        expect(divElement.classList.contains("bg-success")).toBeTruthy();
+        debugElement.triggerEventHandler("mouseleave", new Event("mouseleave"));
+        fixture.detectChanges();
+        expect(component.highlighted).toBeFalsy();
+        expect(divElement.classList.contains("bg-success")).toBeFalsy();
+    })
+    //测试输出属性
+    it("implements output property", () =>{
+        let highlighted:boolean;
+        component.change.subscribe(value => highlighted = value);
+        debugElement.triggerEventHandler("mouseenter", new Event("mouseenter"));
+        expect(highlighted).toBeTruthy();
+        debugElement.triggerEventHandler("mouseleave", new Event("mouseleave"));
+        expect(highlighted).toBeFalsy();
+    }) 
+
+    //测试输入属性
+    it("receives the model through an input property", () => {
+        componentTestComponent.category="Chess";
+        fixtureTestComponent.detectChanges();
+        let products = mockRepository.getProducts().filter(t => t.category == componentTestComponent.category);
+        let componentProducts = componentTestComponent.getProducts();
+        for(let i =0 ; i< componentProducts.length; i++){
+            expect(componentProducts[i]).toEqual(products[i]);
+        }
+        expect(debugElementTestComponent.query(By.css("span")).nativeElement.textContent).toContain(products.length);
     })
 })
