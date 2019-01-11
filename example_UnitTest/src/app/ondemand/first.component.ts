@@ -1,21 +1,27 @@
-import { Component } from "@angular/core";
+import { Component, HostListener } from "@angular/core";
 import { Model } from "app/model/repository.model";
 import { Product } from "app/model/product.model";
 
 //这个组件用一个内联模板来显示一条消息，用于提示路由系统选中了哪个组件
 @Component({
     selector:"first",
-    template:`<div class="bg-primary p-a-1">
-                There are <span class="strong">{{getProducts().length}}</span> products
-              </div>`
+    moduleId:module.id,
+    templateUrl:"first.component.html"
 })
 export class FirstComponent{
     constructor(private repository:Model){
 
     }
     category: string = "Soccer";
+    highlighted: boolean = false;
     getProducts():Product[]{
         return this.repository.getProducts().filter(t => t.category==this.category)
+    }
+
+    @HostListener("mouseenter",["#event.type"])
+    @HostListener("mouseleave",["#event.type"])
+    setHightlight(type:string){
+        this.highlighted = type=="mouseenter";
     }
 
 }
